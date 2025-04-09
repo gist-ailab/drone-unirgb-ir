@@ -5,12 +5,12 @@ channels:
   - conda-forge
 dependencies:
   - mmengine=0.8.2
-  - pytorch=1.10.1
-  - torchvision=0.11.2
+  - pytorch=1.13.1
+  - torchvision=0.14.1
   - scikit-learn=1.4.1.post1
   - scipy=1.7.3
   - numpy=1.24.0
   - pillow=8.2.0
-  - mmcv=2.0.1
+  - mmcv-full=1.7.0
   # - mmsegmentation=1.1.2
   # - mmdet=3.1.0
