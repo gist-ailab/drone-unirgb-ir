@@ -83,7 +83,9 @@ class DualSpectralDataset(BaseDetDataset):
         data_info = {}
 
         # TODO: need to change data_prefix['img'] to data_prefix['img_path']
-        img_path = osp.join(self.data_prefix['img'], img_info['file_name'])
+        print(self.data_prefix)
+        # img_path = osp.join(self.data_prefix['img_path'], img_info['file_name'])
+        img_path = osp.join(self.data_prefix['img'], img_info['img_path'])
         if self.data_prefix.get('seg', None):
             seg_map_path = osp.join(
                 self.data_prefix['seg'],
@@ -96,7 +98,7 @@ class DualSpectralDataset(BaseDetDataset):
         data_info['height'] = img_info['height']
         data_info['width'] = img_info['width']
 
-        img_ir_path = osp.join(self.data_prefix['img'], img_info['file_name_lwir'])
+        img_ir_path = osp.join(self.data_prefix['img'], img_info['img_ir_path'])
         data_info['img_ir_path'] = img_ir_path
 
         if self.return_classes:

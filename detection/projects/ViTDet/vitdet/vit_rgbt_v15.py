@@ -22,7 +22,9 @@ from mmengine.runner.checkpoint import CheckpointLoader
 from mmdet.registry import MODELS
 from typing import Optional
 # Deformable Attn
-from ops.modules import MSDeformAttn
+# from ops.modules import MSDeformAttn
+from projects.ViTDet.vitdet.ops.modules import MSDeformAttn
+
 
 
 # Auxiliary Functions For ViT
@@ -702,8 +704,14 @@ class ViTRGBTv15(BaseModule):
                                                   f'{self.__class__.__name__} '
             ckpt = CheckpointLoader.load_checkpoint(
                 self.init_cfg.checkpoint, logger=logger, map_location='cpu')
-            if 'model' in ckpt:
-                _state_dict = ckpt['model']
+            try:
+                if 'model' in ckpt:
+                    _state_dict = ckpt['model']
+                else:
+                    _state_dict = ckpt['state_dict']
+            except KeyError:
+                logger.error("Neither 'model' nor 'state_dict' found in the checkpoint.")
+                raise
             self.load_state_dict(_state_dict, False)
             
     def _init_deform_weights(self, m):

@@ -14,7 +14,7 @@ from mmdet.utils import setup_cache_size_limit_of_dynamo
 
 def parse_args():
     parser = argparse.ArgumentParser(description='Train a detector')
-    parser.add_argument('config', help='train config file path')
+    parser.add_argument('--config',default='/media/ailab/HDD1/Workspace/src/Personal/UniRGB-IR/detection/configs/_vpt_cascade-rcnn/FLIR_RGBT_ViTDet/100ep/backbone_vitb_IN1k_mae_coco_224x224/1024_v15_rgb-ir-feat-fusion-spm_crossAttn-GRU_4stage_8x1bs.py', help='train config file path')
     parser.add_argument('--work-dir', help='the dir to save logs and models')
     parser.add_argument(
         '--amp',
@@ -52,7 +52,7 @@ def parse_args():
     # will pass the `--local-rank` parameter to `tools/train.py` instead
     # of `--local_rank`.
     parser.add_argument('--local_rank', '--local-rank', type=int, default=0)
-    args = parser.parse_args()  # parse the arguments
+    args = parser.parse_args()
     if 'LOCAL_RANK' not in os.environ:
         os.environ['LOCAL_RANK'] = str(args.local_rank)
 

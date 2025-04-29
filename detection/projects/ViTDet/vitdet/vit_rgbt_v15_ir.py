@@ -17,7 +17,8 @@ from mmengine.runner.checkpoint import CheckpointLoader
 from mmdet.registry import MODELS
 from typing import Optional
 # Deformable Attn
-from ops.modules import MSDeformAttn
+# from ops.modules import MSDeformAttn
+from projects.ViTDet.vitdet.ops.modules import MSDeformAttn
 
 
 # Auxiliary Functions For ViT

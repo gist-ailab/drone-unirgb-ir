@@ -28,13 +28,13 @@ conda env create -f environment.yml
 2. Install detection package:
 ```bash
 cd detection/
-pip install -e -v .
+pip install -v -e .
 ```
 
 3. Install segmentation package:
 ```bash
 cd segmentation/
-pip install -e -v .
+pip install -v -e .
 ```
 
 ## Data Preparation

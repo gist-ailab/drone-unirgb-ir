@@ -1,15 +1,52 @@
 # default: 4 stages
+# _base_ = [
+#     '../../../../_base_/datasets/flir(aligned)/flir_dual_LSJ_1024_1bs.py',
+# ]
 _base_ = [
-    '../../../../_base_/datasets/flir(aligned)/flir_dual_LSJ_1024_1bs.py',
+    '/media/ailab/HDD1/Workspace/src/Personal/UniRGB-IR/detection/configs/_base_/datasets/flir(aligned)/flir_dual_LSJ_1024_1bs.py',
 ]
 
-custom_imports = dict(imports=['projects.ViTDet.vitdet'], allow_failed_imports=False)
+dataset_type = 'DualSpectralDataset'
+classes = ('car', 'person', 'bicycle')  # part of classes listed in DualSpectralDataset.Metainfo
+image_size = (1024, 1024)  # Resize to a square, bs=1/gpu, 768~832
+backend_args = None
 
+custom_imports = dict(imports=['projects.ViTDet.vitdet'], allow_failed_imports=False)
 backbone_norm_cfg = dict(type='LN', requires_grad=True)
 norm_cfg = dict(type='LN2d', requires_grad=True)
 image_size = (1024, 1024)
 batch_augments = [
     dict(type='BatchFixedSizePad', size=image_size, pad_mask=True)
+]
+
+train_pipeline = [
+    dict(type='LoadAlignedImagesFromFile', backend_args=backend_args),
+    dict(type='LoadAnnotations', with_bbox=True, with_mask=False), 
+    dict(type='AlignedImagesRandomFlip', prob=0.5, direction='horizontal'),
+    dict(
+        type='AlignedImagesRandomResize',
+        scale=image_size,
+        ratio_range=(0.1, 2.0),
+        keep_ratio=True),
+    dict(
+        type='AlignedImagesRandomCrop',
+        crop_type='absolute_range',
+        crop_size=image_size,
+        recompute_bbox=True,
+        allow_negative_crop=True),
+    dict(type='FilterAnnotations', min_gt_bbox_wh=(1e-2, 1e-2)),
+    dict(type='AlignedImagesPad', size=image_size, pad_val=dict(img=(114, 114, 114))),
+    dict(type='PackAlignedImagesDetInputs')
+]
+
+test_pipeline = [
+    dict(type='LoadAlignedImagesFromFile', backend_args=backend_args),
+    dict(type='AlignedImagesResize', scale=image_size, keep_ratio=False),
+    dict(type='LoadAnnotations', with_bbox=True, with_mask=False),
+    dict(
+        type='PackAlignedImagesDetInputs',
+        meta_keys=('img_id', 'img_path', 'img_ir_path', 'ori_shape', 'img_shape',
+                   'scale_factor'))
 ]
 
 # model settings, setting mostly inherits from cascade-rcnn_r50_fpn
@@ -64,7 +101,8 @@ model = dict(
         # use_rel_pos=False,
         use_rel_pos=True,
         init_cfg=dict(
-            type='Pretrained', checkpoint="/path/to/vitb_coco_IN1k_mae_coco_cascade-mask-rcnn_224x224_withClsToken_noRel.pth")
+            # type='Pretrained', checkpoint="/path/to/vitb_coco_IN1k_mae_coco_cascade-mask-rcnn_224x224_withClsToken_noRel.pth")
+            type='Pretrained', checkpoint="/media/ailab/HDD1/Workspace/src/Personal/UniRGB-IR/detection/checkpoint/VitDet/vitb_coco_IN1k_mae_coco_cascade-mask-rcnn_224x224_withClsToken_noRel.pth")
     ), 
     neck=dict(  # ViTDet specify this SimpleFPN
         type='SimpleFPN',
@@ -245,11 +283,43 @@ model = dict(
             nms=dict(type='nms', iou_threshold=0.5),
             max_per_img=2000)))  # before: 100
 
-data_root = '/path/to/Datasets/FLIR_align/'  # with separator '/'
+data_root = '/media/ailab/HDD1/Workspace/dset/Drone-Detection-Benchmark/FLIR_aligned_unirgbir/'  # with separator '/'
 # TODO: add MR^{-1} metric.
+train_dataloader = dict(
+    batch_size=1,  
+    num_workers=4,
+    persistent_workers=True,
+    # sampler=dict(type='DefaultSampler', shuffle=True),
+    sampler=dict(type='InfiniteSampler', shuffle=True), 
+    dataset=dict(
+        type=dataset_type,
+        data_root=data_root,
+        metainfo=dict(classes=classes),
+        ann_file='Annotation_train_updated.json',
+        data_prefix=dict(img='train/'),
+        filter_cfg=dict(filter_empty_gt=True, min_size=32),
+        pipeline=train_pipeline))
+
+val_dataloader = dict(
+    batch_size=1,
+    num_workers=2,
+    persistent_workers=True,
+    drop_last=False,
+    sampler=dict(type='DefaultSampler', shuffle=False),
+    dataset=dict(
+        type=dataset_type,
+        data_root=data_root,
+        metainfo=dict(classes=classes),
+        ann_file='Annotation_test_updated.json',
+        data_prefix=dict(img='test/'),
+        test_mode=True,
+        pipeline=test_pipeline))
+test_dataloader = val_dataloader
+
+
 val_evaluator = dict(  
     type='CocoMetric',
-    ann_file=data_root + 'Annotation_test.json',
+    ann_file=data_root + 'Annotation_test_updated.json',
     metric=['bbox'], 
     format_only=False
 )

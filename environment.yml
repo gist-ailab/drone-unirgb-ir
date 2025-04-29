@@ -1,16 +1,12 @@
-name: unirgb-ir
+name: unirgb-ir2
 channels:
-  - defaults
-  - pytorch
   - conda-forge
+  - nvidia
+  - defaults
 dependencies:
-  - mmengine=0.8.2
-  - pytorch=1.10.1
-  - torchvision=0.11.2
-  - scikit-learn=1.4.1.post1
-  - scipy=1.7.3
-  - numpy=1.24.0
-  - pillow=8.2.0
-  - mmcv=2.0.1
-  # - mmsegmentation=1.1.2
-  # - mmdet=3.1.0
+  - cudatoolkit==11.3.1
+  - python==3.9.22
+  - pytorch==1.10.1
+  - torchaudio==0.10.1
+  - torchvision==0.11.2
+prefix: /home/ailab/anaconda3/envs/unirgb-ir2

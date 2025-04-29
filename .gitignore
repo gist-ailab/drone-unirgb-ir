@@ -1,1 +1,6 @@
 .DS_Store
+*.pth
+*.pt
+*.pkl
+**/__pycache__/
+**/work_dirs

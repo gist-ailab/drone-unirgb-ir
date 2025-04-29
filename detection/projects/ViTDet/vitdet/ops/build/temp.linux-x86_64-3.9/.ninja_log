@@ -1,0 +1,6 @@
+# ninja log v5
+3	3254	1745747798024826400	/media/ailab/HDD1/Workspace/src/Personal/UniRGB-IR/detection/projects/ViTDet/vitdet/ops/build/temp.linux-x86_64-3.9/media/ailab/HDD1/Workspace/src/Personal/UniRGB-IR/detection/projects/ViTDet/vitdet/ops/src/cpu/ms_deform_attn_cpu.o	9fedb8e45f61b42c
+4	12220	1745747806990052400	/media/ailab/HDD1/Workspace/src/Personal/UniRGB-IR/detection/projects/ViTDet/vitdet/ops/build/temp.linux-x86_64-3.9/media/ailab/HDD1/Workspace/src/Personal/UniRGB-IR/detection/projects/ViTDet/vitdet/ops/src/vision.o	935d08a5013b4008
+3	3267	1745747867284240000	/media/ailab/HDD1/Workspace/src/Personal/UniRGB-IR/detection/projects/ViTDet/vitdet/ops/build/temp.linux-x86_64-3.9/media/ailab/HDD1/Workspace/src/Personal/UniRGB-IR/detection/projects/ViTDet/vitdet/ops/src/cpu/ms_deform_attn_cpu.o	759efc63122ec695
+4	12406	1745747876410961900	/media/ailab/HDD1/Workspace/src/Personal/UniRGB-IR/detection/projects/ViTDet/vitdet/ops/build/temp.linux-x86_64-3.9/media/ailab/HDD1/Workspace/src/Personal/UniRGB-IR/detection/projects/ViTDet/vitdet/ops/src/cuda/ms_deform_attn_cuda.o	e65c82d953b92c5f
+4	12549	1745747876564967800	/media/ailab/HDD1/Workspace/src/Personal/UniRGB-IR/detection/projects/ViTDet/vitdet/ops/build/temp.linux-x86_64-3.9/media/ailab/HDD1/Workspace/src/Personal/UniRGB-IR/detection/projects/ViTDet/vitdet/ops/src/vision.o	9878cf107f693f16

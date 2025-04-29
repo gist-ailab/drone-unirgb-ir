@@ -1,0 +1,16 @@
+name: unirgb-ir2
+channels:
+  - defaults
+  - pytorch
+  - conda-forge
+dependencies:
+  - python=3.9
+  - pytorch=2.0.0
+  - torchvision=0.15.0
+  - scikit-learn=1.4.1.post1
+  - scipy=1.7.3
+  - numpy=1.24.0
+  - pillow=8.2.0
+  - pip
+  - pip:
+      - mmcv==2.0.1
