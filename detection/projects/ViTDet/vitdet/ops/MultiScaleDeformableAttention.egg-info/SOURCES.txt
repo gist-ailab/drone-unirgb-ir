@@ -1,8 +1,8 @@
 README.md
 setup.py
-/media/ailab/HDD1/Workspace/src/Personal/UniRGB-IR/detection/projects/ViTDet/vitdet/ops/src/vision.cpp
-/media/ailab/HDD1/Workspace/src/Personal/UniRGB-IR/detection/projects/ViTDet/vitdet/ops/src/cpu/ms_deform_attn_cpu.cpp
-/media/ailab/HDD1/Workspace/src/Personal/UniRGB-IR/detection/projects/ViTDet/vitdet/ops/src/cuda/ms_deform_attn_cuda.cu
+/SSDb/jemo_maeng/src/Project/Drone24/detection/UniRGB-IR/detection/projects/ViTDet/vitdet/ops/src/vision.cpp
+/SSDb/jemo_maeng/src/Project/Drone24/detection/UniRGB-IR/detection/projects/ViTDet/vitdet/ops/src/cpu/ms_deform_attn_cpu.cpp
+/SSDb/jemo_maeng/src/Project/Drone24/detection/UniRGB-IR/detection/projects/ViTDet/vitdet/ops/src/cuda/ms_deform_attn_cuda.cu
 MultiScaleDeformableAttention.egg-info/PKG-INFO
 MultiScaleDeformableAttention.egg-info/SOURCES.txt
 MultiScaleDeformableAttention.egg-info/dependency_links.txt

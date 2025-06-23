@@ -3,7 +3,7 @@
 #     '../../../../_base_/datasets/flir(aligned)/flir_dual_LSJ_1024_1bs.py',
 # ]
 _base_ = [
-    '/media/ailab/HDD1/Workspace/src/Personal/UniRGB-IR/detection/configs/_base_/datasets/flir(aligned)/flir_dual_LSJ_1024_1bs.py',
+    '/SSDb/jemo_maeng/src/Project/Drone24/detection/UniRGB-IR/detection/configs/_base_/datasets/flir(aligned)/flir_dual_LSJ_1024_1bs.py',
 ]
 
 dataset_type = 'DualSpectralDataset'
@@ -102,7 +102,7 @@ model = dict(
         use_rel_pos=True,
         init_cfg=dict(
             # type='Pretrained', checkpoint="/path/to/vitb_coco_IN1k_mae_coco_cascade-mask-rcnn_224x224_withClsToken_noRel.pth")
-            type='Pretrained', checkpoint="/media/ailab/HDD1/Workspace/src/Personal/UniRGB-IR/detection/checkpoint/VitDet/vitb_coco_IN1k_mae_coco_cascade-mask-rcnn_224x224_withClsToken_noRel.pth")
+            type='Pretrained', checkpoint="/SSDb/jemo_maeng/src/Project/Drone24/detection/UniRGB-IR/detection/checkpoint/VitDet/vitb_coco_IN1k_mae_coco_cascade-mask-rcnn_224x224_withClsToken_noRel.pth")
     ), 
     neck=dict(  # ViTDet specify this SimpleFPN
         type='SimpleFPN',
@@ -283,7 +283,7 @@ model = dict(
             nms=dict(type='nms', iou_threshold=0.5),
             max_per_img=2000)))  # before: 100
 
-data_root = '/media/ailab/HDD1/Workspace/dset/Drone-Detection-Benchmark/FLIR_aligned_unirgbir/'  # with separator '/'
+data_root = '/SSDb/jemo_maeng/dset/FLIR_aligned_unirgbir/'  # with separator '/'
 # TODO: add MR^{-1} metric.
 train_dataloader = dict(
     batch_size=1,  
@@ -389,4 +389,4 @@ custom_hooks = [dict(type='Fp16CompresssionHook')]
 
 log_processor = dict(type='LogProcessor', window_size=50, by_epoch=False)
 
-auto_scale_lr = dict(base_batch_size=64, enable=True)
+auto_scale_lr = dict(base_batch_size=1, enable=True)
