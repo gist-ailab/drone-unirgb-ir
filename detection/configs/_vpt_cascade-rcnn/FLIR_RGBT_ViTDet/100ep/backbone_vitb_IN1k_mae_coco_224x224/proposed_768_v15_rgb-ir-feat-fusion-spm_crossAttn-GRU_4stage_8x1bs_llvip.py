@@ -3,19 +3,17 @@
 #     '../../../../_base_/datasets/flir(aligned)/flir_dual_LSJ_1024_1bs.py',
 # ]
 _base_ = [
-    '/SSDb/jemo_maeng/src/Project/Drone24/detection/UniRGB-IR/detection/configs/_base_/datasets/flir(aligned)/flir_dual_LSJ_768_1bs.py',
+    '/SSDb/jemo_maeng/src/Project/Drone24/detection/UniRGB-IR/detection/configs/_base_/datasets/llvip/llvip_dual_LSJ_768_1bs.py',
 ]
 
 dataset_type = 'DualSpectralDataset'
-classes = ('car', 'person', 'bicycle')  # part of classes listed in DualSpectralDataset.Metainfo
 
 custom_imports = dict(imports=['projects.ViTDet.vitdet'], allow_failed_imports=False)
 
 backbone_norm_cfg = dict(type='LN', requires_grad=True)
 norm_cfg = dict(type='LN2d', requires_grad=True)
-image_size = (768, 768)
 backend_args = None
-
+image_size = (768, 768)
 batch_augments = [
     dict(type='BatchFixedSizePad', size=image_size, pad_mask=True)
 ]
@@ -64,15 +62,14 @@ model = dict(
         batch_augments=batch_augments),  # NOTE: batch augmentation
     backbone=dict(
         # _delete_=True,
-        type='ViTRGBTv15',
-        method=None,
+        type='ProposedViTRGBTv15',
         img_size=1024,
-        stage_ranges=[[0, 2], [3, 5], [6, 8], [9, 11]],
-        conv_inplane=64,
-        n_points=4,
-        deform_num_heads=12,
+        # stage_ranges=[[0, 2], [3, 5], [6, 8], [9, 11]],
+        # conv_inplane=64,
+        # n_points=4,
+        # deform_num_heads=12,
         # cffn_ratio=0.25,
-        deform_ratio=0.5,
+        # deform_ratio=0.5,
         patch_size=16,
         in_chans=3, 
         embed_dim=768,
@@ -105,8 +102,9 @@ model = dict(
             type='Pretrained', checkpoint="/SSDb/jemo_maeng/src/Project/Drone24/detection/UniRGB-IR/detection/checkpoint/VitDet/vitb_coco_IN1k_mae_coco_cascade-mask-rcnn_224x224_withClsToken_noRel.pth")
     ), 
     neck=dict(  # ViTDet specify this SimpleFPN
-        type='SimpleFPN',
-        backbone_channel=768,
+        # type='SimpleFPN',
+        type = 'FPN',
+        # backbone_channel=768,
         in_channels=[192, 384, 768, 768],
         out_channels=256,
         num_outs=5,
@@ -148,7 +146,7 @@ model = dict(
                 norm_cfg=norm_cfg,  # added
                 fc_out_channels=1024,
                 roi_feat_size=7,
-                num_classes=3,
+                num_classes=1,
                 bbox_coder=dict(
                     type='DeltaXYWHBBoxCoder',
                     target_means=[0., 0., 0., 0.],
@@ -167,7 +165,7 @@ model = dict(
                 norm_cfg=norm_cfg,  # added
                 fc_out_channels=1024,
                 roi_feat_size=7,
-                num_classes=3,
+                num_classes=1,
                 bbox_coder=dict(
                     type='DeltaXYWHBBoxCoder',
                     target_means=[0., 0., 0., 0.],
@@ -186,7 +184,7 @@ model = dict(
                 norm_cfg=norm_cfg,  # added
                 fc_out_channels=1024,
                 roi_feat_size=7,
-                num_classes=3,
+                num_classes=1,
                 bbox_coder=dict(
                     type='DeltaXYWHBBoxCoder',
                     target_means=[0., 0., 0., 0.],
@@ -283,7 +281,7 @@ model = dict(
             nms=dict(type='nms', iou_threshold=0.5),
             max_per_img=2000)))  # before: 100
 
-data_root = '/SSDb/jemo_maeng/dset/FLIR_aligned_unirgbir/'  # with separator '/'
+data_root = '/SSDb/jemo_maeng/dset/LLVIP_coco'  # with separator '/'
 train_dataloader = dict(
     batch_size=1,  
     num_workers=4,
@@ -293,9 +291,9 @@ train_dataloader = dict(
     dataset=dict(
         type=dataset_type,
         data_root=data_root,
-        metainfo=dict(classes=classes),
-        ann_file='Annotation_train_updated.json',
-        data_prefix=dict(img='train/'),
+        metainfo=dict(classes=_base_.classes),
+        ann_file=data_root+'/coco_annotations/train_unirgbir.json',
+        data_prefix=dict(img=''),
         filter_cfg=dict(filter_empty_gt=True, min_size=32),
         pipeline=train_pipeline))
 
@@ -308,9 +306,9 @@ val_dataloader = dict(
     dataset=dict(
         type=dataset_type,
         data_root=data_root,
-        metainfo=dict(classes=classes),
-        ann_file='Annotation_test_updated.json',
-        data_prefix=dict(img='test/'),
+        metainfo=dict(classes = _base_.classes),
+        ann_file=data_root+'/coco_annotations/val_unirgbir.json',
+        data_prefix=dict(img=''),
         test_mode=True,
         pipeline=test_pipeline))
 test_dataloader = val_dataloader
@@ -318,7 +316,7 @@ test_dataloader = val_dataloader
 
 val_evaluator = dict(  
     type='CocoMetric',
-    ann_file=data_root + 'Annotation_test_updated.json',
+    ann_file=data_root + '/coco_annotations/val_unirgbir.json',
     metric=['bbox'], 
     format_only=False
 )

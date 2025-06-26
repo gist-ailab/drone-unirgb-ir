@@ -3,19 +3,18 @@
 #     '../../../../_base_/datasets/flir(aligned)/flir_dual_LSJ_1024_1bs.py',
 # ]
 _base_ = [
-    '/SSDb/jemo_maeng/src/Project/Drone24/detection/UniRGB-IR/detection/configs/_base_/datasets/flir(aligned)/flir_dual_LSJ_768_1bs.py',
+    '/SSDb/jemo_maeng/src/Project/Drone24/detection/UniRGB-IR/detection/configs/_base_/datasets/flir(aligned)/flir_dual_LSJ_1024_1bs.py',
 ]
 
 dataset_type = 'DualSpectralDataset'
 classes = ('car', 'person', 'bicycle')  # part of classes listed in DualSpectralDataset.Metainfo
-
-custom_imports = dict(imports=['projects.ViTDet.vitdet'], allow_failed_imports=False)
-
-backbone_norm_cfg = dict(type='LN', requires_grad=True)
-norm_cfg = dict(type='LN2d', requires_grad=True)
-image_size = (768, 768)
+image_size = (1024, 1024)  # Resize to a square, bs=1/gpu, 768~832
 backend_args = None
 
+custom_imports = dict(imports=['projects.ViTDet.vitdet'], allow_failed_imports=False)
+backbone_norm_cfg = dict(type='LN', requires_grad=True)
+norm_cfg = dict(type='LN2d', requires_grad=True)
+image_size = (1024, 1024)
 batch_augments = [
     dict(type='BatchFixedSizePad', size=image_size, pad_mask=True)
 ]
@@ -64,15 +63,14 @@ model = dict(
         batch_augments=batch_augments),  # NOTE: batch augmentation
     backbone=dict(
         # _delete_=True,
-        type='ViTRGBTv15',
-        method=None,
+        type='ProposedViTRGBTv15',
         img_size=1024,
-        stage_ranges=[[0, 2], [3, 5], [6, 8], [9, 11]],
-        conv_inplane=64,
-        n_points=4,
-        deform_num_heads=12,
+        # stage_ranges=[[0, 2], [3, 5], [6, 8], [9, 11]],
+        # conv_inplane=64,
+        # n_points=4,
+        # deform_num_heads=12,
         # cffn_ratio=0.25,
-        deform_ratio=0.5,
+        # deform_ratio=0.5,
         patch_size=16,
         in_chans=3, 
         embed_dim=768,
@@ -105,8 +103,8 @@ model = dict(
             type='Pretrained', checkpoint="/SSDb/jemo_maeng/src/Project/Drone24/detection/UniRGB-IR/detection/checkpoint/VitDet/vitb_coco_IN1k_mae_coco_cascade-mask-rcnn_224x224_withClsToken_noRel.pth")
     ), 
     neck=dict(  # ViTDet specify this SimpleFPN
-        type='SimpleFPN',
-        backbone_channel=768,
+        # type='SimpleFPN',
+        type = 'FPN',
         in_channels=[192, 384, 768, 768],
         out_channels=256,
         num_outs=5,
@@ -284,6 +282,7 @@ model = dict(
             max_per_img=2000)))  # before: 100
 
 data_root = '/SSDb/jemo_maeng/dset/FLIR_aligned_unirgbir/'  # with separator '/'
+# TODO: add MR^{-1} metric.
 train_dataloader = dict(
     batch_size=1,  
     num_workers=4,
@@ -322,6 +321,7 @@ val_evaluator = dict(
     metric=['bbox'], 
     format_only=False
 )
+
 test_evaluator = val_evaluator
 
 optim_wrapper = dict(
@@ -387,4 +387,4 @@ custom_hooks = [dict(type='Fp16CompresssionHook')]
 
 log_processor = dict(type='LogProcessor', window_size=50, by_epoch=False)
 
-auto_scale_lr = dict(base_batch_size=64, enable=True)
+auto_scale_lr = dict(base_batch_size=1, enable=True)

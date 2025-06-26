@@ -6,33 +6,25 @@ import os.path as osp
 
 from mmengine.config import Config, DictAction
 from mmengine.logging import print_log
-from mmengine.registry import RUNNERS
 from mmengine.runner import Runner
 
-from mmdet.utils import setup_cache_size_limit_of_dynamo
+from mmseg.registry import RUNNERS
 
 
 def parse_args():
-    parser = argparse.ArgumentParser(description='Train a detector')
-    parser.add_argument('--config',default='/SSDb/jemo_maeng/src/Project/Drone24/detection/UniRGB-IR/detection/configs/_vpt_cascade-rcnn/FLIR_RGBT_ViTDet/100ep/backbone_vitb_IN1k_mae_coco_224x224/proposed_768_v15_rgb-ir-feat-fusion-spm_crossAttn-GRU_4stage_8x1bs_llvip.py', help='train config file path')
+    parser = argparse.ArgumentParser(description='Train a segmentor')
+    parser.add_argument('config', help='train config file path')
     parser.add_argument('--work-dir', help='the dir to save logs and models')
+    parser.add_argument(
+        '--resume',
+        action='store_true',
+        default=False,
+        help='resume from the latest checkpoint in the work_dir automatically')
     parser.add_argument(
         '--amp',
         action='store_true',
         default=False,
         help='enable automatic-mixed-precision training')
-    parser.add_argument(
-        '--auto-scale-lr',
-        action='store_true',
-        help='enable automatically scaling LR.')
-    parser.add_argument(
-        '--resume',
-        nargs='?',
-        type=str,
-        const='auto',
-        help='If specify checkpoint path, resume from it, while if not '
-        'specify, try to auto resume from the latest checkpoint '
-        'in the work directory.')
     parser.add_argument(
         '--cfg-options',
         nargs='+',
@@ -62,13 +54,10 @@ def parse_args():
 def main():
     args = parse_args()
 
-    # Reduce the number of repeated compilations and improve training speed.
-    setup_cache_size_limit_of_dynamo()
-
-    # load config
+    # load config, then modify some params...
     cfg = Config.fromfile(args.config)
     cfg.launcher = args.launcher
-    if args.cfg_options is not None:  # cfg_options covers the configs in config.py
+    if args.cfg_options is not None:
         cfg.merge_from_dict(args.cfg_options)
 
     # work_dir is determined in this priority: CLI > segment in file > filename
@@ -81,7 +70,7 @@ def main():
                                 osp.splitext(osp.basename(args.config))[0])
 
     # enable automatic-mixed-precision training
-    if args.amp is True:  # automatic mixed precision
+    if args.amp is True:
         optim_wrapper = cfg.optim_wrapper.type
         if optim_wrapper == 'AmpOptimWrapper':
             print_log(
@@ -95,25 +84,8 @@ def main():
             cfg.optim_wrapper.type = 'AmpOptimWrapper'
             cfg.optim_wrapper.loss_scale = 'dynamic'
 
-    # enable automatically scaling LR
-    if args.auto_scale_lr:
-        if 'auto_scale_lr' in cfg and \
-                'enable' in cfg.auto_scale_lr and \
-                'base_batch_size' in cfg.auto_scale_lr:
-            cfg.auto_scale_lr.enable = True
-        else:
-            raise RuntimeError('Can not find "auto_scale_lr" or '
-                               '"auto_scale_lr.enable" or '
-                               '"auto_scale_lr.base_batch_size" in your'
-                               ' configuration file.')
-
-    # resume is determined in this priority: resume from > auto_resume
-    if args.resume == 'auto':
-        cfg.resume = True
-        cfg.load_from = None
-    elif args.resume is not None:
-        cfg.resume = True
-        cfg.load_from = args.resume
+    # resume training
+    cfg.resume = args.resume
 
     # build the runner from config
     if 'runner_type' not in cfg:
@@ -122,24 +94,11 @@ def main():
     else:
         # build customized runner from the registry
         # if 'runner_type' is set in the cfg
-        runner = RUNNERS.build(cfg) 
+        runner = RUNNERS.build(cfg)
 
     # start training
     runner.train()
 
 
 if __name__ == '__main__':
-    main() 
-
-
-# Running train.py directly is for single GPU; 
-# the code mainly reads parameters and hands them over to the mmengine runner for the training process.
-# e.g. GPUS=2 ./tools/slurm_train.sh dev vitdet_mask_b projects/ViTDet/configs/vitdet_mask-rcnn_vit-b-mae_lsj-100e.py ./work_dirs/vitdet_mask-rcnn_vit-b-mae_lsj-100e/rgb_7_18
-# Loading checkpoint: 
-# CUDA_VISIBLE_DEVICES=0,1 python tools/train.py \
-    # ./projects/ViTDet/configs/vitdet_mask-rcnn_vit-b-mae_lsj-100e.py \
-        # --work-dir ./work_dirs/vitdet_mask-rcnn_vit-b-mae_lsj-100e/rgb_7_18 \
-            # --resume ./pretrained/vitdet_mask-rcnn_vit-b-mae_lsj-100e_20230328_153519-e15fe294.pth
-# e.g. CUDA_HOME=/usr/local/cuda-11.4 CUDA_VISIBLE_DEVICES=0,1 tools/dist_train.sh \
-    # configs/_vpt/KAIST-RGB-ViTDet/vitdet_mask-rcnn_vit-b-mae.py 2 \
-        # --work-dir ./work_dirs/vitdet_mask-rcnn_vit-b-kaist-512x640/rgb_full_8-4
+    main()

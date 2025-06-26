@@ -1,0 +1,4 @@
+# ninja log v5
+0	17257	1750841843280424520	/SSDb/jemo_maeng/src/Project/Drone24/detection/UniRGB-IR/detection/projects/ViTDet/vitdet/ops/build/temp.linux-x86_64-cpython-39/SSDb/jemo_maeng/src/Project/Drone24/detection/UniRGB-IR/detection/projects/ViTDet/vitdet/ops/src/cpu/ms_deform_attn_cpu.o	398f98c4812d6d5e
+1	54343	1750841880373294062	/SSDb/jemo_maeng/src/Project/Drone24/detection/UniRGB-IR/detection/projects/ViTDet/vitdet/ops/build/temp.linux-x86_64-cpython-39/SSDb/jemo_maeng/src/Project/Drone24/detection/UniRGB-IR/detection/projects/ViTDet/vitdet/ops/src/cuda/ms_deform_attn_cuda.o	4eacf80dad305493
+1	60179	1750841886201430721	/SSDb/jemo_maeng/src/Project/Drone24/detection/UniRGB-IR/detection/projects/ViTDet/vitdet/ops/build/temp.linux-x86_64-cpython-39/SSDb/jemo_maeng/src/Project/Drone24/detection/UniRGB-IR/detection/projects/ViTDet/vitdet/ops/src/vision.o	ba191804aa5dceb5

@@ -18,12 +18,14 @@ mmdet/.mim/configs/_base_/default_runtime.py
 mmdet/.mim/configs/_base_/datasets/flir(aligned)/flir_dual_LSJ_1024_1bs.py
 mmdet/.mim/configs/_base_/datasets/flir(aligned)/flir_dual_LSJ_768_1bs.py
 mmdet/.mim/configs/_base_/datasets/flir(aligned)/flir_dual_LSJ_768_2bs.py
+mmdet/.mim/configs/_base_/datasets/llvip/llvip_dual_LSJ_768_1bs.py
 mmdet/.mim/configs/_base_/schedules/schedule_1x.py
 mmdet/.mim/configs/_base_/schedules/schedule_20e.py
 mmdet/.mim/configs/_base_/schedules/schedule_2x.py
 mmdet/.mim/configs/_vpt_ablation/flir_768_v15_ir-vit_ir-rgb-adapter_4stage_2x2bs.py
 mmdet/.mim/configs/_vpt_cascade-rcnn/FLIR_RGBT_ViTDet/100ep/backbone_vitb_IN1k_mae_coco_224x224/1024_v15_rgb-ir-feat-fusion-spm_crossAttn-GRU_4stage_8x1bs.py
 mmdet/.mim/configs/_vpt_cascade-rcnn/FLIR_RGBT_ViTDet/100ep/backbone_vitb_IN1k_mae_coco_224x224/768_v15_rgb-ir-feat-fusion-spm_crossAttn-GRU_4stage_8x1bs.py
+mmdet/.mim/configs/_vpt_cascade-rcnn/FLIR_RGBT_ViTDet/100ep/backbone_vitb_IN1k_mae_coco_224x224/768_v15_rgb-ir-feat-fusion-spm_crossAttn-GRU_4stage_8x1bs_llvip.py
 mmdet/.mim/tools/dist_test.sh
 mmdet/.mim/tools/dist_test_tracking.sh
 mmdet/.mim/tools/dist_train.sh
